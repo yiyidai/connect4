@@ -129,17 +129,18 @@ h1 {
   font-weight: 300;
   color: #000000;
   text-shadow: 0 0.04em 0.04em rgba(0, 0, 0, 0.35);
-  background-color: rgb(238, 91, 115);
+  background-color: rgb(17, 233, 161);
   text-align: center;
   transition: all 0.15s;
   width: 120px;
   height: 50px;
   font-size: 15px;
+  margin-left: 20px;
 }
 
 .restart_button:hover {
   text-shadow: 0 0 2em rgba(255, 255, 255, 1);
   color: white;
   border-color: #ffffff;
-  background-color: purple;
+  background-color: rgb(79, 236, 87);
 }

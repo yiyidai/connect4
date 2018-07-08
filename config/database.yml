@@ -52,3 +52,4 @@ production:
   database: connect4_production
   username: connect4
   password: <%= ENV['CONNECT4_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
