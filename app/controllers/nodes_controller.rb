@@ -25,9 +25,6 @@ class NodesController < ApplicationController
 
     def show
     end
-
-    def win
-    end
     
     def new
         @node = Node.new
@@ -39,6 +36,7 @@ class NodesController < ApplicationController
     end
 
     def validateResult(rowNumber, columnNumber)
+        rowArray = [@row1, @row2, @row3, @row4, @row5, @row6, @row7]
         validateRow(@row1)
         validateRow(@row2)
         validateRow(@row3)
@@ -53,206 +51,97 @@ class NodesController < ApplicationController
         validateColumn(@column5)
         validateColumn(@column6)
         validateColumn(@column7)
-        # validateBasedOnTheLatestNode(rowNumber, columnNumber)
-        # if rowNumber >= 3
-        #     validateTopLeftToRightButtom(rowNumber, columnNumber)
-        # end
+        checkLeftDiagonal(rowNumber, columnNumber, rowArray)
+        checkRightDiagonal(rowNumber, columnNumber, rowArray)
         redirect_to nodes_url
     end
 
-    def validateBasedOnTheLatestNode(rowNumber, columnNumber)
-        rowArray = [@row1, @row2, @row3, @row4, @row5, @row6, @row7]
-        i = 0
-        tempForA = 1
-        tempForB = 1
-        while rowNumber + i <=6 && columnNumber + i <=6
-            if rowArray[rowNumber+i+1][columnNumber+i+1] !=nil
-                if rowArray[rowNumber+i+1][columnNumber+i+1].belongsTo != rowArray[rowNumber+i][columnNumber+i].belongsTo
-                    break
-                elsif rowArray[rowNumber+i+1][columnNumber+i+1].belongsTo == rowArray[rowNumber+i][columnNumber+i].belongsTo
-                    if rowArray[rowNumber+i+1][columnNumber+i+1].belongsTo == 'A'
-                        tempForA +=1
-                    elsif rowArray[rowNumber+i+1][columnNumber+i+1].belongsTo == 'B'
-                        tempForB +=1
-                    end
-                    if tempForA == 4
-                        @A.winner = true
-                        @A.save
-                        break
-                    elsif tempForB == 4
-                        @B.winner = true
-                        @B.save
-                        break
-                    end
-                end
-            end
-        end
-        if tempForA > 1
-            while rowNumber - i >=0 && columnNumber - i >= 0
-                if rowArray[rowNumber-i-1][columnNumber-i-1] != nil
-                    if rowArray[rowNumber-i-1][columnNumber-i-1].belongsTo != rowArray[rowNumber-i][columnNumber-i].belongsTo
-                        break
-                    elsif rowArray[rowNumber-i-1][columnNumber-i-1].belongsTo == rowArray[rowNumber-i][columnNumber-i].belongsTo
-                        if rowArray[rowNumber-i-1][columnNumber-i-1].belongsTo == 'B'
-                            break
-                        else
-                            tempForA += 1
-                            if tempForA == 4
-                                @A.winner = true
-                                @A.save
-                                break
-                            end
-                        end
-                    end
-                end
-            end
-        end
-        if tempForB > 1
-            while rowNumber - i >=0 && columnNumber - i >= 0
-                if rowArray[rowNumber-i-1][columnNumber-i-1] != nil
-                    if rowArray[rowNumber-i-1][columnNumber-i-1].belongsTo != rowArray[rowNumber-i][columnNumber-i].belongsTo
-                        break
-                    elsif rowArray[rowNumber-i-1][columnNumber-i-1].belongsTo == rowArray[rowNumber-i][columnNumber-i].belongsTo
-                        if rowArray[rowNumber-i-1][columnNumber-i-1].belongsTo == 'A'
-                            break
-                        else
-                            tempForB += 1
-                            if tempForB == 4
-                                @B.winner = true
-                                @B.save
-                                break
-                            end
-                        end
-                    end
-                end
+    def checkLeftDiagonal(rowNumber, columnNumber, rowArray)
+        count = 0
+        # Set the initil position coordinate
+        downright = [columnNumber,rowNumber];
+        puts "initial downright #{downright}"
+        # Get who is in play
+        currentPlayer = @player
+        puts "piece placed player #{currentPlayer}"
+        # Set the upper left
+        upleft = [columnNumber-1,rowNumber+1];
+        puts "initial upleft #{upleft}"
+        # Search up-left direction first
+        # until it's already the most left and most top
+        until upleft[0] < 0 || upleft[1] > 6 || count == 4
+            puts "under until upleft #{upleft}"
+            if isCurrentPlayerNode(upleft[1], upleft[0], rowArray, currentPlayer.name)
+                count+=1
+                upleft[0] -= 1 #move to next left one
+                upleft[1] += 1 #move to next top one
+                puts "count #{count}, new upleft #{upleft}"
+            # If any piece doesn't belong to this palyer, stop counting immediately
+            else
+                break
             end
         end
 
-        ## TODO: from top left to right buttom
-    end
+        # Search down-right direction
+        # until it's already the most right and most buttom
+        until downright[0] > 6 || downright[1] < 0 || count == 4
+            puts "under until, downright #{downright}"
+            if isCurrentPlayerNode(downright[1], downright[0], rowArray, currentPlayer.name)
+                count+=1
+                downright[0] += 1 #move to next right
+                downright[1] -= 1 #move to next down
+                puts "count #{count}, new downright #{downright}"
+            # If any piece doesn't belong to this palyer, stop counting immediately
+            else
+                break
+            end
+        end
 
-    def validateTopLeftToRightButtom(rowNumber, columnNumber)
-        @rowArray = [@row1, @row2, @row3, @row4, @row5, @row6, @row7]
-        if rowNumber >= 6
-            validateLTtoRB1
-            validateLTtoRB2
-            validateLTtoRB3
-            validateLTtoRB4
-        elsif rowNumber >=5
-            validateLTtoRB2
-            validateLTtoRB3
-            validateLTtoRB4
-        elsif rowNumber >=4
-            validateLTtoRB3
-            validateLTtoRB4
-        else rowNumber >=3
-            validateLTtoRB4
+        # If there are 
+        if count == 4
+            currentPlayer.winner = true
+            currentPlayer.save
         end
     end
+
+    def checkRightDiagonal(rowNumber, columnNumber, rowArray)
+        downleft = [columnNumber,rowNumber]
+        upright = [columnNumber+1,rowNumber+1]
+        count = 0
+        currentPlayer = @player
         
-    def validateLTtoRB1
-        tempForA = 1
-        tempForB = 1
-        i = 0
-        while @rowArray[6-i][i]!=nil && @rowArray[6-i-1][i+1]!=nil && i<=5
-            if @rowArray[6-i][i].belongsTo == @rowArray[6-i-1][i+1].belongsTo && @rowArray[6-i][i].belongsTo == 'A'
-                tempForA +=1
-                if tempForA == 4
-                    @A.winner = true
-                    @A.save
-                    break
-                end
-                i +=1
-            elsif @rowArray[6-i][i].belongsTo == @rowArray[6-i-1][i+1].belongsTo && @rowArray[6-i][i].belongsTo == 'B'
-                tempForB +=1
-                if tempForB == 4
-                    @B.winner = true
-                    @B.save
-                    break
-                end
-                i +=1
+        until downleft[0]<0||downleft[1]<0||count==4
+            if isCurrentPlayerNode(downleft[1], downleft[0], rowArray, currentPlayer.name)
+                count+=1
+                downleft[0] -=1
+                downleft[1] -=1
+            else
+                break
             end
         end
-    end
 
-    def validateLTtoRB2
-        tempForA = 1
-        tempForB = 1
-        i = 0
-        while @rowArray[5-i][i]!=nil && @rowArray[5-i-1][i+1]!=nil && i<=4
-            if @rowArray[5-i][i].belongsTo == @rowArray[5-i-1][i+1].belongsTo && @rowArray[5-i][i].belongsTo == 'A'
-                tempForA +=1
-                if tempForA == 4
-                    @A.winner = true
-                    @A.save
-                    break
-                end
-                i +=1
-            elsif @rowArray[5-i][i].belongsTo == @rowArray[5-i-1][i+1].belongsTo && @rowArray[5-i][i].belongsTo == 'B'
-                tempForB +=1
-                if tempForB == 4
-                    @B.winner = true
-                    @B.save
-                    break
-                end
-                i +=1
+        until upright[0]>6||upright[1]>6||count==4
+            if isCurrentPlayerNode(upright[1], upright[0], rowArray, currentPlayer.name)
+                count+=1
+                upright[0]+=1
+                upright[1]+=1
+            else
+                break
             end
         end
-    end
 
-    def validateLTtoRB3
-        tempForA = 1
-        tempForB = 1
-        i = 0
-        while @rowArray[4-i][i]!=nil && @rowArray[4-i-1][i+1]!=nil && i<=3
-            if @rowArray[4-i][i].belongsTo == @rowArray[4-i-1][i+1].belongsTo && @rowArray[4-i][i].belongsTo == 'A'
-                tempForA +=1
-                if tempForA == 4
-                    @A.winner = true
-                    @A.save
-                    break
-                end
-                i +=1
-            elsif @rowArray[4-i][i].belongsTo == @rowArray[4-i-1][i+1].belongsTo && @rowArray[4-i][i].belongsTo == 'B'
-                tempForB +=1
-                if tempForB == 4
-                    @B.winner = true
-                    @B.save
-                    break
-                end
-                i +=1
-            end
-        end
-    end
-
-    def validateLTtoRB4(columnNumber)
-        tempForA = 1
-        tempForB = 1
-        i = 0
-        while @rowArray[3-i][i]!=nil && @rowArray[3-i-1][i+1]!=nil && i<=2
-            if @rowArray[3-i][i].belongsTo == @rowArray[3-i-1][i+1].belongsTo && @rowArray[3-i][i].belongsTo == 'A'
-                tempForA +=1
-                if tempForA == 4
-                    @A.winner = true
-                    @A.save
-                    break
-                end
-                i +=1
-            elsif @rowArray[3-i][i].belongsTo == @rowArray[3-i-1][i+1].belongsTo && @rowArray[3-i][i].belongsTo == 'B'
-                tempForB +=1
-                if tempForB == 4
-                    @B.winner = true
-                    @B.save
-                    break
-                end
-                i +=1
-            end
+        if count == 4
+            currentPlayer.winner = true
+            currentPlayer.save
         end
     end
 
 
+    def isCurrentPlayerNode(row, column, rowArray, player)
+        puts "Current player: #{rowArray[row][column].belongsTo}"
+        rowArray[row][column].belongsTo == player
+    end
 
-        
     def validateRow(rowArray)
         tempForA = 1
         tempForB = 1
@@ -328,7 +217,7 @@ class NodesController < ApplicationController
                 @player.save
                 @inActivePlayer.active = true
                 @inActivePlayer.save
-                validateResult(i,0) and return
+                validateResult(i,1) and return
             end
             i+=1
         end

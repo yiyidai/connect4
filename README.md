@@ -1,9 +1,6 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
+This is a CONNECT 4 game implemented by Ruby on Rails and MySQL, light use of CSS and HTML.
 
 * Ruby version
 
