@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  rowNumber: 1
+  columnNumber: 1
+  belongsTo: MyString
+
+two:
+  rowNumber: 1
+  columnNumber: 1
+  belongsTo: MyString
