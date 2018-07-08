@@ -1,0 +1,74 @@
+<p class="<%='hide' if @winner != nil%>">It's Player <%=@player.name%>'s ture.</p>
+<p class="<%='hide' if @winner == nil%>"><%=@winnername%> wins!</p>
+<button class="<%='hide' if @winner == nil%>"><%=link_to 'RESTART', connect4_home_path%></button>
+<table>
+    <tbody>
+        <tr class = "<%='hide'if @winner != nil%>">
+            <th>buttons</th>
+            <td><%= link_to 'Click Me!', nodes_click1_path, method: :post %></td>
+            <td><%= link_to 'Click Me!', nodes_click2_path, method: :post %></td>
+            <td><%= link_to 'Click Me!', nodes_click3_path, method: :post %></td>
+            <td><%= link_to 'Click Me!', nodes_click4_path, method: :post %></td>
+            <td><%= link_to 'Click Me!', nodes_click5_path, method: :post %></td>
+            <td><%= link_to 'Click Me!', nodes_click6_path, method: :post %></td>
+            <td><%= link_to 'Click Me!', nodes_click7_path, method: :post %></td>
+        </tr>
+        <tr>
+            <th>row 7</th>
+            <% @row7.each do |rowCell|%>
+            <td>
+                <div class= "circle <%='pink' if rowCell.belongsTo == 'A'%><%='blue' if rowCell.belongsTo == 'B'%>"><%=rowCell.rowNumber%>,<%=rowCell.columnNumber%></div>
+            </td>
+            <% end %>
+        </tr>
+        <tr>
+            <th>row 6</th>
+            <% @row6.each do |rowCell|%>
+            <td>
+                <div class= "circle <%='pink' if rowCell.belongsTo == 'A'%><%='blue' if rowCell.belongsTo == 'B'%>"><%=rowCell.rowNumber%>,<%=rowCell.columnNumber%></div>
+            </td>
+            <% end %>
+        </tr>
+        <tr>
+            <th>row 5</th>
+            <% @row5.each do |rowCell|%>
+            <td>
+                <div class= "circle <%='pink' if rowCell.belongsTo == 'A'%><%='blue' if rowCell.belongsTo == 'B'%>"><%=rowCell.rowNumber%>,<%=rowCell.columnNumber%></div>
+            </td>
+            <% end %>
+        </tr>
+        <tr>
+            <th>row 4</th>
+            <% @row4.each do |rowCell|%>
+            <td>
+                <div class= "circle <%='pink' if rowCell.belongsTo == 'A'%><%='blue' if rowCell.belongsTo == 'B'%>"><%=rowCell.rowNumber%>,<%=rowCell.columnNumber%></div>
+            </td>
+            <% end %>
+        </tr>
+        <tr>
+            <th>row 3</th>
+            <% @row3.each do |rowCell|%>
+            <td>
+                <div class= "circle <%='pink' if rowCell.belongsTo == 'A'%><%='blue' if rowCell.belongsTo == 'B'%>"><%=rowCell.rowNumber%>,<%=rowCell.columnNumber%></div>
+            </td>
+            <% end %>
+        </tr>
+        <tr>
+            <th>row 2</th>
+            <% @row2.each do |rowCell|%>
+            <td>
+                <div class= "circle <%='pink' if rowCell.belongsTo == 'A'%><%='blue' if rowCell.belongsTo == 'B'%>"><%=rowCell.rowNumber%>,<%=rowCell.columnNumber%></div>
+            </td>
+            <% end %>
+        </tr>
+        <tr>
+            <th>row 1</th>
+            <% @row1.each do |rowCell|%>
+            <td>
+                <div class= "circle <%='pink' if rowCell.belongsTo == 'A'%><%='blue' if rowCell.belongsTo == 'B'%>"><%=rowCell.rowNumber%>,<%=rowCell.columnNumber%></div>
+            </td>
+            <% end %>
+        </tr>
+    </tbody>
+</table>
+
